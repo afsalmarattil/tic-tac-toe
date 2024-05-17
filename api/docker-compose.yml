@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  express-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: express-app
+    depends_on:
+      - mongodb
+    ports:
+      - "3005:3005"
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/tic-tac-toe
+    command: >
+      sh -c "npm run create-users && npm run start"
+    volumes:
+      - .:/app
+
+volumes:
+  mongo-data:
