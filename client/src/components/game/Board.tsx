@@ -16,6 +16,7 @@ export const Board: React.FC = () => {
     isTie,
     setIsTie,
     incrementTotalGames,
+    gridSize,
   } = useGameContext();
 
   const { players, setPlayers } = usePlayerContext();
@@ -30,7 +31,7 @@ export const Board: React.FC = () => {
         i === index ? currentPlayer.symbol : square
       );
 
-      const winnerSymbol = calculateWinner(newSquares);
+      const winnerSymbol = calculateWinner(newSquares, gridSize);
       if (winnerSymbol) {
         setWinner((prevWinner) => {
           const winningPlayer = players.find(
@@ -62,7 +63,7 @@ export const Board: React.FC = () => {
       <div className="w-full flex justify-start">
         <Status winner={winner} currentPlayer={currentPlayer} />
       </div>
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className={`grid grid-cols-${gridSize} gap-4 mb-4`}>
         {squares.map((square, index) => (
           <Cell key={index} value={square} onClick={() => handleClick(index)} />
         ))}

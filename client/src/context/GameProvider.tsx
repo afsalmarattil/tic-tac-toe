@@ -21,6 +21,8 @@ interface GameContextType {
   handleReset: () => void;
   totalGames: number;
   incrementTotalGames: () => void;
+  gridSize: number;
+  setGridSize: (size: number) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -40,14 +42,17 @@ interface GameProviderProps {
 export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const { players, setPlayers } = usePlayerContext();
 
-  const [squares, setSquares] = useState<SquareType[]>(Array(9).fill(null));
+  const [gridSize, setGridSize] = useState<number>(3);
+  const [squares, setSquares] = useState<SquareType[]>(
+    Array(gridSize * gridSize).fill(null)
+  );
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0);
   const [winner, setWinner] = useState<Player | null>(null);
   const [isTie, setIsTie] = useState<boolean>(false);
   const [totalGames, setTotalGames] = useState<number>(0);
 
   const handleReset = () => {
-    setSquares(Array(9).fill(null));
+    setSquares(Array(gridSize * gridSize).fill(null));
     setWinner(null);
     setIsTie(false);
     setCurrentPlayerIndex((prevIndex) =>
@@ -57,6 +62,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
   const incrementTotalGames = () => {
     setTotalGames(totalGames + 1);
+  };
+
+  const updateGridSize = (size: number) => {
+    setGridSize((s) => size);
+    setSquares(Array(size * size).fill(null));
+    setWinner(null);
+    setIsTie(false);
+    setCurrentPlayerIndex(0);
   };
 
   return (
@@ -73,6 +86,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         handleReset,
         totalGames,
         incrementTotalGames,
+        gridSize,
+        setGridSize: updateGridSize,
       }}
     >
       {children}

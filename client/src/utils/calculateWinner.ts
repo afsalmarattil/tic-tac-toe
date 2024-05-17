@@ -1,13 +1,13 @@
 import { SquareType, XorO } from '../types';
 
-export const calculateWinner = (squares: SquareType[]): XorO | null => {
-  
-  const lines =generateRowColumnPairs(3)
 
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+
+export const calculateWinner = (squares: SquareType[], gridSize: number): XorO | null => {
+  const winningLines = generateRowColumnPairs(gridSize);
+  for (const line of winningLines) {
+    const [first, ...rest] = line;
+    if (squares[first] && rest.every(index => squares[index] === squares[first])) {
+      return squares[first];
     }
   }
   return null;
